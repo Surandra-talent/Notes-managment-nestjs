@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpCode, HttpStatus ,Request,UnauthorizedException,UseGuards,Get ,Req,ValidationPipe} from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus ,Request,UnauthorizedException,UseGuards,Get ,Req,ValidationPipe,BadRequestException} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service'; 
 import { AuthGuard } from './auth.guard';
@@ -25,6 +25,22 @@ export class AuthController {
     async login(@Request() req) {
         console.log(req.body.username);
         console.log(req.body.password);
+        const username=req.body.username;
+        const password=req.body.password;
+        // Manual validation
+        if (!password || typeof password !== 'string' ) {
+            throw new BadRequestException('Password is required and must be strings.');
+        }
+        else if (!username || typeof username !== 'string' ) {
+            throw new BadRequestException('Username is required and must be strings.');
+        }
+        else if (!username || typeof username !== 'string' || !password || typeof password !== 'string') {
+            throw new BadRequestException('Username and password are required and must be strings.');
+        }
+   
+
+    //console.log(username);
+    //console.log(password);
         const user = await this.authService.validateUser(req.body.username, req.body.password);
         console.log('user');
         console.log(user);
